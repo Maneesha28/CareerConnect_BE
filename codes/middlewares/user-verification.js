@@ -30,10 +30,25 @@ async function verifyCompany(req, res, next){
     }catch(err){
         res.status(400).send('Invalid Token');
     }
-    
 }
+
+async function verifyJobseeker(req, res, next){
+    const cookie  = req.header('cookie');
+    if(!cookie) return res.redirect('/api/auth/login?status=Access Denied');
+    const token = cookie.slice(11);
+    try{
+        const verified = jwt.verify(token, process.env.JWT_TOKEN_HELPER);
+        req.user = await DB_jobseeker.getJobseeker(req.params.jobseeker_id);
+        if(req.user.user_id != verified.user_id) return res.redirect('/api/auth/login?status=Access Denied');
+        next();
+    }catch(err){
+        res.status(400).send('Invalid Token');
+    }
+}
+
 
 module.exports = {
     verify,
-    verifyCompany
+    verifyCompany,
+    verifyJobseeker
 }
