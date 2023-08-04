@@ -9,7 +9,6 @@ async function insertJobseeker(user_id){
     await database.execute(sql, binds);
 }
 
-
 module.exports = {
     insertJobseeker
 }
