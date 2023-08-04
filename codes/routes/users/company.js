@@ -3,7 +3,7 @@ const router = require('express').Router();
 const DB_user = require('../../DB-codes/users/DB-user-api');
 const DB_company = require('../../DB-codes/users/DB-company-api');
 const { verifyCompany } = require('../../middlewares/user-verification');
-const { verify } = require('crypto');
+const { verify } = require('../../middlewares/user-verification');
 
 router.put('/:company_id', verifyCompany, async (req, res) => {
     await DB_company.editCompany(req.body.address, req.body.phone_no, req.body.website_address, req.body.company_logo, 
