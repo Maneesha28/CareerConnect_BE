@@ -21,13 +21,14 @@ app.use(express.json());
 const authRoute = require('./routes/users/auth');
 const companyRoute = require('./routes/users/company');
 const jobseekerRoute = require('./routes/users/jobseeker');
-
+const projectRoute = require('./routes/users/project');
 
 //route middleware
 //USER
 app.use('/api/auth', authRoute);    // everything in authroute will have this prefix
-app.use('/api/company', companyRoute)
-app.use('/api/jobseeker', jobseekerRoute)
+app.use('/api/company', companyRoute);
+app.use('/api/jobseeker', jobseekerRoute);
+app.use('/api/project', projectRoute);
  
 
 //PORT
