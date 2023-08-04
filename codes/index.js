@@ -19,11 +19,13 @@ app.use(express.json());
 //import routes
 //USER
 const authRoute = require('./routes/users/auth');
+const companyRoute = require('./routes/users/company');
 
 
 //route middleware
 //USER
 app.use('/api/auth', authRoute);    // everything in authroute will have this prefix
+app.use('/api/company', companyRoute)
  
 
 //PORT
