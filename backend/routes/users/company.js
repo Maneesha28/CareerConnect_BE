@@ -7,8 +7,7 @@ const { verify } = require('../../middlewares/user-verification');
 router.put('/:company_id', verifyCompany, async (req, res) => {
     await DB_company.editCompany(req.body.address, req.body.phone_no, req.body.website_address, req.body.company_logo, 
         req.body.trade_license, req.body.description, req.body.company_name, req.params.company_id);
-        
-    res.send('Company edited');
+    res.redirect('/api/company/'+req.params.company_id);  
 });
 
 router.get('/:company_id', verify, async (req, res) => {

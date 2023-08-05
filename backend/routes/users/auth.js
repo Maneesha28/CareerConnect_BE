@@ -11,7 +11,7 @@ const {verify} = require('../../middlewares/user-verification');
 router.post('/register', async (req, res) => {
     result = await DB_user.getUserByEmail(req.body.email);
     if(result != undefined){
-        res.send("Email already exists");
+        res.send({"status" : "Email already exists"});
     }else{
         //hash the password
         const hashedPassword = await bcrypt.hash(req.body.password, await bcrypt.genSalt(10));
@@ -21,7 +21,7 @@ router.post('/register', async (req, res) => {
         result = await DB_user.getUserByEmail(req.body.email);
         if(result.role === "jobseeker") await DB_jobseeker.insertJobseeker(result.user_id);
         else await DB_company.insertCompany(result.user_id);
-        res.send("Successfully registered");
+        res.send({"status" : "Successfully registered"});
     }
 });
 
@@ -29,7 +29,7 @@ router.post('/login', async (req, res) => {
     result = await DB_user.getUserByEmail(req.body.email);
     // if no result, there is no such user
     if (result === undefined) {
-        res.send('Wrong Email');
+        res.send({"status" : "Wrong email"});
     } else {
         // match passwords
         const validPass = await bcrypt.compare(req.body.password, result.password);
@@ -41,10 +41,17 @@ router.post('/login', async (req, res) => {
                 httpOnly: true
             }
             res.cookie('auth-token', token, options);
-            res.send('logged in');
+            if (result.role == "jobseeker"){
+                jobseeker = await DB_jobseeker.getJobseekerByUserID(result.user_id);
+                res.redirect('/api/jobseeker/'+jobseeker.jobseeker_id);
+            }
+            else if (result.role == "company"){
+                company = await DB_company.getCompanyByUserID(result.user_id);
+                res.redirect('/api/company/'+company.company_id);
+            }
         }
         else {
-            res.send('Wrong Password');
+            res.send({"status" : "Wrong password"});
         }
     }
     
@@ -53,8 +60,7 @@ router.post('/login', async (req, res) => {
 router.post('/logout', verify ,(req,res)=>{
     //destroy token
     res.cookie('auth-token', '', { maxAge:1 });
-    res.send("logged out");
-    // res.redirect('/api/auth/login');
+    res.send({"status" : "Logged out"});
 });
 
 
