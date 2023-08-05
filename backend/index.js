@@ -22,6 +22,11 @@ const authRoute = require('./routes/users/auth');
 const companyRoute = require('./routes/users/company');
 const jobseekerRoute = require('./routes/users/jobseeker');
 const projectRoute = require('./routes/users/project');
+const educationRoute = require('./routes/users/education');
+const achievementRoute = require('./routes/users/achievement');
+const workexperienceRoute = require('./routes/users/workexperience');
+const publicationRoute = require('./routes/users/publication');
+const skillRoute = require('./routes/users/skill');
 
 //route middleware
 //USER
@@ -29,6 +34,11 @@ app.use('/api/auth', authRoute);    // everything in authroute will have this pr
 app.use('/api/company', companyRoute);
 app.use('/api/jobseeker', jobseekerRoute);
 app.use('/api/project', projectRoute);
+app.use('/api/education', educationRoute);
+app.use('/api/achievement', achievementRoute);
+app.use('/api/workexperience', workexperienceRoute);
+app.use('/api/publication', publicationRoute);
+app.use('/api/skill', skillRoute);
  
 
 //PORT
