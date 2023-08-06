@@ -7,18 +7,18 @@ const { verify } = require('../../middlewares/user-verification');
 router.post('/:jobseeker_id', verifyJobseeker, async (req, res) => {
     await DB_publication.insertPublication(req.params.jobseeker_id, req.body.title, req.body.authors, req.body.journal, req.body.pdf_link, 
         req.body.publication_date);   
-    res.send('Publication added');
+    res.send({"status" : "Publication added"});
 });
 
 router.put('/:publication_id', verifyPublicationAccess, async (req, res) => {
     await DB_publication.editPublication(req.body.title, req.body.authors, req.body.journal, req.body.pdf_link, 
         req.body.publication_date, req.params.publication_id);   
-    res.send('Publication edited');
+    res.send({"status" : "Publication edited"});
 });
 
 router.delete('/:publication_id', verifyPublicationAccess, async (req, res) => {
     await DB_publication.deletePublication(req.params.publication_id);
-    res.send('Publication deleted');
+    res.send({"status" : "Publication deleted"});
 });
 
 router.get('/all/:jobseeker_id', verify, async (req, res) => {

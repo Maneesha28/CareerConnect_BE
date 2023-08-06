@@ -7,18 +7,18 @@ const { verify } = require('../../middlewares/user-verification');
 router.post('/:jobseeker_id', verifyJobseeker, async (req, res) => {
     await DB_workexperience.insertWork_Experience(req.params.jobseeker_id, req.body.organization, req.body.designation, req.body.employment_type, 
         req.body.start_date, req.body.end_date);   
-    res.send('Work Experience added');
+    res.send({"status" : "Work Experience added"});
 });
 
 router.put('/:exp_id', verifyWorkExperienceAccess, async (req, res) => {
     await DB_workexperience.editWork_Experience( req.body.organization, req.body.designation, req.body.employment_type, 
         req.body.start_date, req.body.end_date, req.params.exp_id);   
-    res.send('Work Experience edited');
+    res.send({"status" : "Work Experience edited"});
 });
 
 router.delete('/:exp_id', verifyWorkExperienceAccess, async (req, res) => {
     await DB_workexperience.deleteWork_Experience(req.params.exp_id);
-    res.send('Work Experience deleted');
+    res.send({"status" : "Work Experience deleted"});
 });
 
 router.get('/all/:jobseeker_id', verify, async (req, res) => {

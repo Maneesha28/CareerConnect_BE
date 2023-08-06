@@ -7,18 +7,18 @@ const { verify } = require('../../middlewares/user-verification');
 router.post('/:jobseeker_id', verifyJobseeker, async (req, res) => {
     await DB_education.insertEducation(req.params.jobseeker_id, req.body.degree, req.body.subject, req.body.institution, req.body.result, 
         req.body.start_date, req.body.end_date);   
-    res.send('Education added');
+    res.send({"status" : "Education added"});
 });
 
 router.put('/:degree_id', verifyEducationAccess, async (req, res) => {
     await DB_education.editEducation(req.body.degree, req.body.subject, req.body.institution, req.body.result, 
         req.body.start_date, req.body.end_date, req.params.degree_id);   
-    res.send('Education edited');
+    res.send({"status" : "Education edited"});
 });
 
 router.delete('/:degree_id', verifyEducationAccess, async (req, res) => {
     await DB_education.deleteEducation(req.params.degree_id);
-    res.send('Education deleted');
+    res.send({"status" : "Education deleted"});
 });
 
 router.get('/all/:jobseeker_id', verify, async (req, res) => {

@@ -7,18 +7,18 @@ const { verify } = require('../../middlewares/user-verification');
 router.post('/:jobseeker_id', verifyJobseeker, async (req, res) => {
     await DB_achievement.insertAchievement(req.params.jobseeker_id, req.body.achievement_name, req.body.achievement_date, req.body.position, 
         req.body.organized_by);   
-    res.send('Achievement added');
+    res.send({"status" : "Achievement added"});
 });
 
 router.put('/:achievement_id', verifyAchievementAccess, async (req, res) => {
     await DB_achievement.editAchievement(req.body.achievement_name, req.body.achievement_date, req.body.position, 
         req.body.organized_by, req.params.achievement_id);   
-    res.send('Achievement edited');
+    res.send({"status" : "Achievement edited"});
 });
 
 router.delete('/:achievement_id', verifyAchievementAccess, async (req, res) => {
     await DB_achievement.deleteAchievement(req.params.achievement_id);
-    res.send('Achievement deleted');
+    res.send({"status" : "Achievement deleted"});
 });
 
 router.get('/all/:jobseeker_id', verify, async (req, res) => {

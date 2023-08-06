@@ -7,18 +7,18 @@ const { verify } = require('../../middlewares/user-verification');
 router.post('/:jobseeker_id', verifyJobseeker, async (req, res) => {
     await DB_project.insertProject(req.params.jobseeker_id, req.body.title, req.body.description, req.body.project_link, req.body.technologies, 
         req.body.start_date, req.body.end_date);   
-    res.send('Project added');
+    res.send({"status" : "Project added"});
 });
 
 router.put('/:project_id', verifyProjectAccess, async (req, res) => {
     await DB_project.editProject(req.body.title, req.body.description, req.body.project_link, req.body.technologies, 
         req.body.start_date, req.body.end_date, req.params.project_id);   
-    res.send('Project edited');
+    res.send({"status" : "Project edited"});
 });
 
 router.delete('/:project_id', verifyProjectAccess, async (req, res) => {
     await DB_project.deleteProject(req.params.project_id);
-    res.send('Project deleted');
+    res.send({"status" : "Project deleted"});
 });
 
 router.get('/all/:jobseeker_id', verify, async (req, res) => {
