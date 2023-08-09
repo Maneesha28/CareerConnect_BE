@@ -32,11 +32,9 @@ async function getSkills(jobseeker_id){
 }
 
 async function getSkill(skill_id){
-    const sql = `SELECT "Skills".*, "Job_Seeker".user_id 
+    const sql = `SELECT *
                 FROM "Skills"
-                INNER JOIN "Job_Seeker"
-                ON "Skills".jobseeker_id = "Job_Seeker".jobseeker_id 
-                WHERE "Skills".skill_id = $1`;
+                WHERE skill_id = $1`;
     const binds = [skill_id];
     result = (await database.execute(sql, binds)).rows;
     return result[0];

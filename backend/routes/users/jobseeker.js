@@ -4,9 +4,9 @@ const DB_jobseeker = require('../../DB-codes/users/DB-jobseeker-api');
 const { verifyJobseeker } = require('../../middlewares/user-verification');
 const { verify } = require('../../middlewares/user-verification');
 
-router.put('/:jobseeker_id', verifyJobseeker, async (req, res) => {
+router.put('', verifyJobseeker, async (req, res) => {
     await DB_jobseeker.editJobseeker(req.body.name, req.body.gender, req.body.profile_pic, req.body.date_of_birth,
-            req.body.nationality, req.body.nid, req.body.address, req.body.phone_no, req.params.jobseeker_id);   
+            req.body.nationality, req.body.nid, req.body.address, req.body.phone_no, req.user.jobseeker_id);   
     res.send({"status" : "Jobseeker edited"});
 });
 

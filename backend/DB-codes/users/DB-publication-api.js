@@ -35,11 +35,9 @@ async function getPublications(jobseeker_id){
 }
 
 async function getPublication(publication_id){
-    const sql = `SELECT "Publications".*, "Job_Seeker".user_id 
+    const sql = `SELECT *
                 FROM "Publications"
-                INNER JOIN "Job_Seeker"
-                ON "Publications".jobseeker_id = "Job_Seeker".jobseeker_id 
-                WHERE "Publications".publication_id = $1`;
+                WHERE publication_id = $1`;
     const binds = [publication_id];
     result = (await database.execute(sql, binds)).rows;
     return result[0];

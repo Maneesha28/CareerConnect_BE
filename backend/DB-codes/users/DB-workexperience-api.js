@@ -35,11 +35,9 @@ async function getWork_Experiences(jobseeker_id){
 }
 
 async function getWork_Experience(exp_id){
-    const sql = `SELECT "Work_Experience".*, "Job_Seeker".user_id 
+    const sql = `SELECT *
                 FROM "Work_Experience"
-                INNER JOIN "Job_Seeker"
-                ON "Work_Experience".jobseeker_id = "Job_Seeker".jobseeker_id 
-                WHERE "Work_Experience".exp_id = $1`;
+                WHERE exp_id = $1`;
     const binds = [exp_id];
     result = (await database.execute(sql, binds)).rows;
     return result[0];

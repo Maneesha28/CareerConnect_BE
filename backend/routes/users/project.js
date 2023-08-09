@@ -4,8 +4,8 @@ const DB_project = require('../../DB-codes/users/DB-project-api');
 const { verifyJobseeker, verifyProjectAccess } = require('../../middlewares/user-verification');
 const { verify } = require('../../middlewares/user-verification');
 
-router.post('/:jobseeker_id', verifyJobseeker, async (req, res) => {
-    await DB_project.insertProject(req.params.jobseeker_id, req.body.title, req.body.description, req.body.project_link, req.body.technologies, 
+router.post('', verifyJobseeker, async (req, res) => {
+    await DB_project.insertProject(req.user.jobseeker_id, req.body.title, req.body.description, req.body.project_link, req.body.technologies, 
         req.body.start_date, req.body.end_date);   
     res.send({"status" : "Project added"});
 });

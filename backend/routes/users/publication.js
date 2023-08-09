@@ -4,8 +4,8 @@ const DB_publication = require('../../DB-codes/users/DB-publication-api');
 const { verifyJobseeker, verifyPublicationAccess } = require('../../middlewares/user-verification');
 const { verify } = require('../../middlewares/user-verification');
 
-router.post('/:jobseeker_id', verifyJobseeker, async (req, res) => {
-    await DB_publication.insertPublication(req.params.jobseeker_id, req.body.title, req.body.authors, req.body.journal, req.body.pdf_link, 
+router.post('', verifyJobseeker, async (req, res) => {
+    await DB_publication.insertPublication(req.user.jobseeker_id, req.body.title, req.body.authors, req.body.journal, req.body.pdf_link, 
         req.body.publication_date);   
     res.send({"status" : "Publication added"});
 });

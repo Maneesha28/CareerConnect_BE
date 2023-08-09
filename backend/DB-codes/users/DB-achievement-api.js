@@ -34,11 +34,9 @@ async function getAchievements(jobseeker_id){
 }
 
 async function getAchievement(achievement_id){
-    const sql = `SELECT "Achievements".*, "Job_Seeker".user_id 
+    const sql = `SELECT *
                 FROM "Achievements"
-                INNER JOIN "Job_Seeker"
-                ON "Achievements".jobseeker_id = "Job_Seeker".jobseeker_id 
-                WHERE "Achievements".achievement_id = $1`;
+                WHERE achievement_id = $1`;
     const binds = [achievement_id];
     result = (await database.execute(sql, binds)).rows;
     return result[0];

@@ -3,7 +3,7 @@ const database = new Database();
 
 
 async function insertCompany(user_id){
-    const sql = `INSERT INTO "Company" (user_id)
+    const sql = `INSERT INTO "Company" (company_id)
                 VALUES ($1)`;
     const binds = [user_id];
     await database.execute(sql, binds);
@@ -30,16 +30,8 @@ async function getCompany(company_id){
     return result[0];
 }
 
-async function getCompanyByUserID(user_id){
-    const sql = `SELECT * FROM "Company" WHERE user_id = $1`
-    const binds = [user_id];
-    result = (await database.execute(sql, binds)).rows;
-    return result[0];
-}
-
 module.exports = {
     insertCompany,
     editCompany,
     getCompany,
-    getCompanyByUserID
 }

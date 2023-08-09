@@ -4,8 +4,8 @@ const DB_education = require('../../DB-codes/users/DB-education-api');
 const { verifyJobseeker, verifyEducationAccess } = require('../../middlewares/user-verification');
 const { verify } = require('../../middlewares/user-verification');
 
-router.post('/:jobseeker_id', verifyJobseeker, async (req, res) => {
-    await DB_education.insertEducation(req.params.jobseeker_id, req.body.degree, req.body.subject, req.body.institution, req.body.result, 
+router.post('', verifyJobseeker, async (req, res) => {
+    await DB_education.insertEducation(req.user.jobseeker_id, req.body.degree, req.body.subject, req.body.institution, req.body.result, 
         req.body.start_date, req.body.end_date);   
     res.send({"status" : "Education added"});
 });

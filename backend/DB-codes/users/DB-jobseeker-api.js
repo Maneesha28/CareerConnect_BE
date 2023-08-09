@@ -3,7 +3,7 @@ const database = new Database();
 
 
 async function insertJobseeker(user_id){
-    const sql = `INSERT INTO "Job_Seeker" (user_id)
+    const sql = `INSERT INTO "Job_Seeker" (jobseeker_id)
                 VALUES ($1)`;
     const binds = [user_id];
     await database.execute(sql, binds);
@@ -31,16 +31,8 @@ async function getJobseeker(jobseeker_id){
     return result[0];
 }
 
-async function getJobseekerByUserID(user_id){
-    const sql = `SELECT * FROM "Job_Seeker" WHERE user_id = $1`
-    const binds = [user_id];
-    result = (await database.execute(sql, binds)).rows;
-    return result[0];
-}
-
 module.exports = {
     insertJobseeker,
     editJobseeker,
-    getJobseeker,
-    getJobseekerByUserID
+    getJobseeker
 }

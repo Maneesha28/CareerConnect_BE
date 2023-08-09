@@ -30,8 +30,8 @@ async function verifyCompany(req, res, next){
     const token = cookie.slice(11);
     try{
         const verified = jwt.verify(token, process.env.JWT_TOKEN_HELPER);
-        req.user = await DB_company.getCompany(req.params.company_id);
-        if(req.user.user_id != verified.user_id) return res.send({"status" : "Access Denied"});
+        req.user = await DB_company.getCompany(verified.user_id);
+        if(req.user.company_id != verified.user_id) return res.send({"status" : "Access Denied"});
         next();
     }catch(err){
         res.status(400).send({"status" : "Access Denied"});
@@ -44,8 +44,8 @@ async function verifyJobseeker(req, res, next){
     const token = cookie.slice(11);
     try{
         const verified = jwt.verify(token, process.env.JWT_TOKEN_HELPER);
-        req.user = await DB_jobseeker.getJobseeker(req.params.jobseeker_id);
-        if(req.user.user_id != verified.user_id) return res.send({"status" : "Access Denied"});
+        req.user = await DB_jobseeker.getJobseeker(verified.user_id);
+        if(req.user.jobseeker_id != verified.user_id) return res.send({"status" : "Access Denied"});
         next();
     }catch(err){
         res.status(400).send({"status" : "Access Denied"});
@@ -59,7 +59,7 @@ async function verifyProjectAccess(req, res, next){
     try{
         const verified = jwt.verify(token, process.env.JWT_TOKEN_HELPER);
         req.project = await DB_project.getProject(req.params.project_id);
-        if(req.project.user_id != verified.user_id) return res.send({"status" : "Access Denied"});
+        if(req.project.jobseeker_id != verified.user_id) return res.send({"status" : "Access Denied"});
         next();
     }catch(err){
         res.status(400).send({"status" : "Access Denied"});
@@ -73,7 +73,7 @@ async function verifyEducationAccess(req, res, next){
     try{
         const verified = jwt.verify(token, process.env.JWT_TOKEN_HELPER);
         req.education = await DB_education.getEducation(req.params.degree_id);
-        if(req.education.user_id != verified.user_id) return res.send({"status" : "Access Denied"});
+        if(req.education.jobseeker_id != verified.user_id) return res.send({"status" : "Access Denied"});
         next();
     }catch(err){
         res.status(400).send({"status" : "Access Denied"});
@@ -87,7 +87,7 @@ async function verifyAchievementAccess(req, res, next){
     try{
         const verified = jwt.verify(token, process.env.JWT_TOKEN_HELPER);
         req.achievement = await DB_achievement.getAchievement(req.params.achievement_id);
-        if(req.achievement.user_id != verified.user_id) return res.send({"status" : "Access Denied"});
+        if(req.achievement.jobseeker_id != verified.user_id) return res.send({"status" : "Access Denied"});
         next();
     }catch(err){
         res.status(400).send({"status" : "Access Denied"});
@@ -101,7 +101,7 @@ async function verifyWorkExperienceAccess(req, res, next){
     try{
         const verified = jwt.verify(token, process.env.JWT_TOKEN_HELPER);
         req.workexperience = await DB_workexperience.getWork_Experience(req.params.exp_id);
-        if(req.workexperience.user_id != verified.user_id) return res.send({"status" : "Access Denied"});
+        if(req.workexperience.jobseeker_id != verified.user_id) return res.send({"status" : "Access Denied"});
         next();
     }catch(err){
         res.status(400).send({"status" : "Access Denied"});
@@ -115,7 +115,7 @@ async function verifyPublicationAccess(req, res, next){
     try{
         const verified = jwt.verify(token, process.env.JWT_TOKEN_HELPER);
         req.publication = await DB_publication.getPublication(req.params.publication_id);
-        if(req.publication.user_id != verified.user_id) return res.send({"status" : "Access Denied"});
+        if(req.publication.jobseeker_id != verified.user_id) return res.send({"status" : "Access Denied"});
         next();
     }catch(err){
         res.status(400).send({"status" : "Access Denied"});
@@ -129,7 +129,7 @@ async function verifySkillAccess(req, res, next){
     try{
         const verified = jwt.verify(token, process.env.JWT_TOKEN_HELPER);
         req.skill = await DB_skill.getSkill(req.params.skill_id);
-        if(req.skill.user_id != verified.user_id) return res.send({"status" : "Access Denied"});
+        if(req.skill.jobseeker_id != verified.user_id) return res.send({"status" : "Access Denied"});
         next();
     }catch(err){
         res.status(400).send({"status" : "Access Denied"});

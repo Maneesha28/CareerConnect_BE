@@ -4,8 +4,8 @@ const DB_achievement = require('../../DB-codes/users/DB-achievement-api');
 const { verifyJobseeker, verifyAchievementAccess } = require('../../middlewares/user-verification');
 const { verify } = require('../../middlewares/user-verification');
 
-router.post('/:jobseeker_id', verifyJobseeker, async (req, res) => {
-    await DB_achievement.insertAchievement(req.params.jobseeker_id, req.body.achievement_name, req.body.achievement_date, req.body.position, 
+router.post('', verifyJobseeker, async (req, res) => {
+    await DB_achievement.insertAchievement(req.user.jobseeker_id, req.body.achievement_name, req.body.achievement_date, req.body.position, 
         req.body.organized_by);   
     res.send({"status" : "Achievement added"});
 });

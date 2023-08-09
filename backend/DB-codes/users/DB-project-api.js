@@ -36,11 +36,9 @@ async function getProjects(jobseeker_id){
 }
 
 async function getProject(project_id){
-    const sql = `SELECT "Projects".*, "Job_Seeker".user_id 
+    const sql = `SELECT *
                 FROM "Projects"
-                INNER JOIN "Job_Seeker"
-                ON "Projects".jobseeker_id = "Job_Seeker".jobseeker_id 
-                WHERE "Projects".project_id = $1`;
+                WHERE project_id = $1`;
     const binds = [project_id];
     result = (await database.execute(sql, binds)).rows;
     return result[0];

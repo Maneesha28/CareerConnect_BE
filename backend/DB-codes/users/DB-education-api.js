@@ -36,11 +36,9 @@ async function getEducations(jobseeker_id){
 }
 
 async function getEducation(degree_id){
-    const sql = `SELECT "Education".*, "Job_Seeker".user_id 
+    const sql = `SELECT *
                 FROM "Education"
-                INNER JOIN "Job_Seeker"
-                ON "Education".jobseeker_id = "Job_Seeker".jobseeker_id 
-                WHERE "Education".degree_id = $1`;
+                WHERE degree_id = $1`;
     const binds = [degree_id];
     result = (await database.execute(sql, binds)).rows;
     return result[0];

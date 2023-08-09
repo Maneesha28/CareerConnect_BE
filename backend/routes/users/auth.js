@@ -42,12 +42,10 @@ router.post('/login', async (req, res) => {
             }
             res.cookie('auth-token', token, options);
             if (result.role == "jobseeker"){
-                jobseeker = await DB_jobseeker.getJobseekerByUserID(result.user_id);
-                res.redirect('/api/jobseeker/'+jobseeker.jobseeker_id);
+                res.redirect('/api/jobseeker/'+result.user_id);
             }
             else if (result.role == "company"){
-                company = await DB_company.getCompanyByUserID(result.user_id);
-                res.redirect('/api/company/'+company.company_id);
+                res.redirect('/api/company/'+result.user_id);
             }
         }
         else {
