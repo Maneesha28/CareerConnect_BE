@@ -33,7 +33,10 @@ router.get('/following_count/:jobseeker_id', verify, async (req, res) => {
     res.send(result);
 });
 
-
+router.get('/is_following/:company_id', verifyJobseeker, async (req, res) => {
+    result = await DB_follow.isFollowing(req.user.jobseeker_id, req.params.company_id);
+    res.send(result);
+});
 
 
 module.exports = router;

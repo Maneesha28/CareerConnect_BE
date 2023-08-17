@@ -2,7 +2,29 @@ require('dotenv').config();
 const router = require('express').Router();
 const  DB_Jobpost = require('../../DB-codes/jobposts/DB-jobpost-api');
 const { verifyJobpostAccess } = require('../../middlewares/jobpost-verification');
-const { verify, verifyCompany } = require('../../middlewares/user-verification');
+const { verify, verifyCompany, verifyJobseeker } = require('../../middlewares/user-verification');
+
+
+router.post('/shortlisted', verifyJobseeker, async (req, res) => {
+    await DB_Jobpost.insertShorlistedJob(req.user.jobseeker_id, req.body.jobpost_id);   
+    res.send({"status" : "Shorlisted Job added"});
+});
+
+router.delete('/shortlisted', verifyJobseeker, async (req, res) => {
+    await DB_Jobpost.deleteShortlistedJob(req.user.jobseeker_id, req.body.jobpost_id);   
+    res.send({"status" : "Shorlisted Job deleted"});
+});
+
+router.get('/shortlisted', verifyJobseeker, async (req, res) => {
+    result = await DB_Jobpost.getShorlistedJobs(req.user.jobseeker_id);
+    res.send(result);
+});
+
+router.get('/is_shortlisted/:jobpost_id', verifyJobseeker, async (req, res) => {
+    result = await DB_Jobpost.isShortlisted(req.user.jobseeker_id, req.params.jobpost_id);
+    res.send(result);
+});
+
 
 router.post('', verifyCompany, async (req, res) => {
     await DB_Jobpost.insertJobpost(req.user.company_id, req.body.title, req.body.description, req.body.requirements, 
@@ -26,8 +48,18 @@ router.get('/all/:company_id', verify, async (req, res) => {
     res.send(result);
 });
 
-router.get('/archived', verifyCompany, async (req, res) => {
-    result = await DB_Jobpost.getArchivedJobposts(req.user.company_id);
+router.get('/archived/:company_id', verify, async (req, res) => {
+    result = await DB_Jobpost.getArchivedJobposts(req.params.company_id);
+    res.send(result);
+});
+
+router.get('/followed', verifyJobseeker, async (req, res) => {
+    result = await DB_Jobpost.getFollowedJobposts(req.user.jobseeker_id);
+    res.send(result);
+});
+
+router.get('/searched', verifyJobseeker, async (req, res) => {
+    result = await DB_Jobpost.getSearchedJobposts(req.query.keyword);
     res.send(result);
 });
 
