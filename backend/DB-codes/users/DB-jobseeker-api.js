@@ -25,7 +25,11 @@ async function editJobseeker(name, gender, profile_pic, date_of_birth, nationali
 }
 
 async function getJobseeker(jobseeker_id){
-    const sql = `SELECT * FROM "Job_Seeker" WHERE jobseeker_id = $1`
+    const sql = `SELECT "Job_Seeker".*, "User".email, "User".role 
+                FROM "Job_Seeker"
+                INNER JOIN "User"
+                ON "Job_Seeker".jobseeker_id = "User".user_id
+                WHERE "Job_Seeker".jobseeker_id = $1`
     const binds = [jobseeker_id];
     result = (await database.execute(sql, binds)).rows;
     return result[0];

@@ -24,7 +24,11 @@ async function editCompany(address, phone_no, website_address, company_logo, tra
 }
 
 async function getCompany(company_id){
-    const sql = `SELECT * FROM "Company" WHERE company_id = $1`
+    const sql = `SELECT "Company".*, "User".email, "User".role 
+                FROM "Company"
+                INNER JOIN "User"
+                ON "Company".company_id = "User".user_id
+                WHERE "Company".company_id = $1`
     const binds = [company_id];
     result = (await database.execute(sql, binds)).rows;
     return result[0];
