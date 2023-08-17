@@ -52,11 +52,20 @@ async function getFollowingCount(jobseeker_id){
     return result[0];
 }
 
+async function isFollowing(jobseeker_id, company_id){
+    const sql = `SELECT COUNT(*) as is_following FROM "Follow" WHERE jobseeker_id = $1 AND company_id = $2`;
+    const binds = [jobseeker_id, company_id];
+    await database.execute(sql, binds);
+    result = (await database.execute(sql, binds)).rows;
+    return result[0];
+}
+
 module.exports = {
     insertFollow,
     deleteFollow,
     getFollowers,
     getFollowerCount,
     getFollowings,
-    getFollowingCount
+    getFollowingCount,
+    isFollowing
 }
