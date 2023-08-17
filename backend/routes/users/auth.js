@@ -19,8 +19,8 @@ router.post('/register', async (req, res) => {
         await DB_user.insertUser(req.body.email, req.body.role, hashedPassword);
         //insert into jobseeker or company according to their role
         result = await DB_user.getUserByEmail(req.body.email);
-        if(result.role === "jobseeker") await DB_jobseeker.insertJobseeker(result.user_id);
-        else await DB_company.insertCompany(result.user_id);
+        if(result.role === "jobseeker") await DB_jobseeker.insertJobseeker(result.user_id, req.body.name);
+        else await DB_company.insertCompany(result.user_id, req.body.name);
         res.send({"status" : "Successfully registered"});
     }
 });

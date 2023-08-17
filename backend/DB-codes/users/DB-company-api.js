@@ -2,10 +2,10 @@ const Database = require('../database');
 const database = new Database();
 
 
-async function insertCompany(user_id){
-    const sql = `INSERT INTO "Company" (company_id)
-                VALUES ($1)`;
-    const binds = [user_id];
+async function insertCompany(user_id, company_name){
+    const sql = `INSERT INTO "Company" (company_id, company_name)
+                VALUES ($1, $2)`;
+    const binds = [user_id, company_name];
     await database.execute(sql, binds);
 }
 
