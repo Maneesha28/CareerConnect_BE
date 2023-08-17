@@ -31,6 +31,15 @@ const workexperienceRoute = require('./routes/users/workexperience');
 const publicationRoute = require('./routes/users/publication');
 const skillRoute = require('./routes/users/skill');
 
+//FOLLOW
+const followRoute = require('./routes/follows/follow');
+
+//JOBPOST
+const jobpostRoute = require('./routes/jobposts/jobpost');
+
+//REVIEW
+const reviewRoute = require('./routes/reviews/review');
+
 //route middleware
 //USER
 app.use('/api/auth', authRoute);    // everything in authroute will have this prefix
@@ -42,6 +51,17 @@ app.use('/api/achievement', achievementRoute);
 app.use('/api/workexperience', workexperienceRoute);
 app.use('/api/publication', publicationRoute);
 app.use('/api/skill', skillRoute);
+
+//FOLLOW
+app.use('/api/follow', followRoute);
+
+//JOBPOST
+app.use('/api/jobpost', jobpostRoute);
+
+//REVIEW
+app.use('/api/review', reviewRoute);
+
+
  
 
 //PORT
