@@ -9,17 +9,17 @@ async function insertCompany(user_id, company_name){
     await database.execute(sql, binds);
 }
 
-async function editCompany(address, phone_no, website_address, company_logo, trade_license, description, company_name, company_id){
+async function editCompany(address, phone_no, website_address, company_logo, trade_license, about, company_name, company_id){
     const sql = `UPDATE "Company"
                 SET address = COALESCE($1, address),
                     phone_no = COALESCE($2, phone_no),
                     website_address = COALESCE($3, website_address),
                     company_logo =  COALESCE($4, company_logo),
                     trade_license = COALESCE($5,trade_license),
-                    description = COALESCE($6, description),
+                    about = COALESCE($6, about),
                     company_name = COALESCE($7, company_name)
                 WHERE company_id = $8`
-    const binds = [address, phone_no, website_address, company_logo, trade_license, description, company_name, company_id];
+    const binds = [address, phone_no, website_address, company_logo, trade_license, about, company_name, company_id];
     await database.execute(sql, binds);
 }
 

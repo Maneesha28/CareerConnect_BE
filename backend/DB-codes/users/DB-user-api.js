@@ -23,8 +23,16 @@ async function getUserById(user_id){
     return result[0];
 }
 
+async function getUserInfo(user_id){
+    const sql = `SELECT user_id, email, role FROM "User" WHERE user_id = $1`
+    const binds = [user_id];
+    const result = (await database.execute(sql, binds)).rows;
+    return result[0];
+}
+
 module.exports = {
     insertUser,
     getUserByEmail,
-    getUserById
+    getUserById,
+    getUserInfo
 }
