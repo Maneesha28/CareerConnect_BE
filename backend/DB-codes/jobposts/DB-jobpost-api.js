@@ -84,7 +84,7 @@ async function getSearchedJobposts(keyword){
                 (
                     address ~* $1
                     OR company_name ~* $1
-                    OR "Company".description ~* $1
+                    OR "Company".about ~* $1
                     OR title ~* $1
                     OR "JobPost".description ~* $1
                     OR requirements ~* $1
