@@ -61,5 +61,9 @@ router.post('/logout', verify ,(req,res)=>{
     res.send({"status" : "Logged out"});
 });
 
+router.get('/user', verify ,(req,res)=>{
+    res.send({"user_id" : req.user.user_id, "role" : req.user.role});
+});
+
 
 module.exports = router;
