@@ -9,7 +9,7 @@ async function insertJobseeker(user_id, name){
     await database.execute(sql, binds);
 }
 
-async function editJobseeker(name, gender, profile_pic, date_of_birth, nationality, nid, address, phone_no, jobseeker_id){
+async function editJobseeker(name, gender, profile_pic, date_of_birth, nationality, nid, address, phone_no,github_link,about,linkedin_link, jobseeker_id){
     const sql = `UPDATE "Job_Seeker"
                 SET name = COALESCE($1, name),
                     gender = COALESCE($2, gender),
@@ -18,9 +18,12 @@ async function editJobseeker(name, gender, profile_pic, date_of_birth, nationali
                     nationality = COALESCE($5,nationality),
                     nid = COALESCE($6, nid),
                     address = COALESCE($7, address),
-                    phone_no = COALESCE($8, phone_no)
-                WHERE jobseeker_id = $9`
-    const binds = [name, gender, profile_pic, date_of_birth, nationality, nid, address, phone_no, jobseeker_id];
+                    phone_no = COALESCE($8, phone_no),
+                    github_link = COALESCE($9, github_link),
+                    about = COALESCE($10, about),
+                    linkedin_link = COALESCE($11, linkedin_link)
+                WHERE jobseeker_id = $12`
+    const binds = [name, gender, profile_pic, date_of_birth, nationality, nid, address, phone_no,github_link,about,linkedin_link,jobseeker_id];
     await database.execute(sql, binds);
 }
 
