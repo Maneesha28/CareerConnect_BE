@@ -10,6 +10,11 @@ router.put('', verifyCompany, async (req, res) => {
     res.send({"status" : "Company edited"});  
 });
 
+router.get('/all',verify,async (req, res) => {
+    result = await DB_company.getCompanies();
+    res.send(result);
+});
+
 router.get('/:company_id', verify, async (req, res) => {
     result = await DB_company.getCompany(req.params.company_id);
     res.send(result)
