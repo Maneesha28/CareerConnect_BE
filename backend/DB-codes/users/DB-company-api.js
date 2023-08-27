@@ -34,8 +34,16 @@ async function getCompany(company_id){
     return result[0];
 }
 
+async function getCompanies(){
+    const sql = `SELECT * FROM "Company"`;
+    console.log('here');
+    const result = (await database.execute(sql)).rows;
+    return result;
+}
+
 module.exports = {
     insertCompany,
     editCompany,
     getCompany,
+    getCompanies,
 }
