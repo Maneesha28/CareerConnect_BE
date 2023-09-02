@@ -26,7 +26,6 @@ async function deleteSkill(skill_id){
 async function getSkills(jobseeker_id){
     const sql = `SELECT * FROM "Skills" WHERE jobseeker_id = $1`;
     const binds = [jobseeker_id];
-    await database.execute(sql, binds);
     result = (await database.execute(sql, binds)).rows;
     return result;
 }

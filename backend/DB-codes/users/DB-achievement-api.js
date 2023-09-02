@@ -28,7 +28,6 @@ async function deleteAchievement(achievement_id){
 async function getAchievements(jobseeker_id){
     const sql = `SELECT * FROM "Achievements" WHERE jobseeker_id = $1`;
     const binds = [jobseeker_id];
-    await database.execute(sql, binds);
     result = (await database.execute(sql, binds)).rows;
     return result;
 }

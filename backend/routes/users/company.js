@@ -11,7 +11,7 @@ router.put('', verifyCompany, async (req, res) => {
 });
 
 router.get('/all',verify,async (req, res) => {
-    result = await DB_company.getCompanies();
+    result = await DB_company.getCompanies(req.user.user_id);
     res.send(result);
 });
 

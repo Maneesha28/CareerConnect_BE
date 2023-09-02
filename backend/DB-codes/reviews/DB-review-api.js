@@ -29,7 +29,6 @@ async function getReviews(company_id){
     ON "Review".jobseeker_id = "Job_Seeker".jobseeker_id
     WHERE company_id = $1`;
     const binds = [company_id];
-    await database.execute(sql, binds);
     result = (await database.execute(sql, binds)).rows;
     return result;
 }
@@ -37,7 +36,6 @@ async function getReviews(company_id){
 async function getAvgStars(company_id){
     const sql = `SELECT ROUND(AVG(stars)) as avg_stars FROM "Review" WHERE company_id = $1`;
     const binds = [company_id];
-    await database.execute(sql, binds);
     result = (await database.execute(sql, binds)).rows;
     return result[0];
 }

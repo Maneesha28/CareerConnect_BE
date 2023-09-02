@@ -20,7 +20,6 @@ async function getFollowers(company_id){
                 ON "Job_Seeker".jobseeker_id = "Follow".jobseeker_id 
                 WHERE "Follow".company_id = $1`;
     const binds = [company_id];
-    await database.execute(sql, binds);
     result = (await database.execute(sql, binds)).rows;
     return result;
 }
@@ -28,7 +27,6 @@ async function getFollowers(company_id){
 async function getFollowerCount(company_id){
     const sql = `SELECT COUNT(*) as follower_count FROM "Follow" WHERE company_id = $1`;
     const binds = [company_id];
-    await database.execute(sql, binds);
     result = (await database.execute(sql, binds)).rows;
     return result[0];
 }
@@ -47,7 +45,6 @@ async function getFollowings(jobseeker_id){
 async function getFollowingCount(jobseeker_id){
     const sql = `SELECT COUNT(*) as following_count FROM "Follow" WHERE jobseeker_id = $1`;
     const binds = [jobseeker_id];
-    await database.execute(sql, binds);
     result = (await database.execute(sql, binds)).rows;
     return result[0];
 }
@@ -55,7 +52,6 @@ async function getFollowingCount(jobseeker_id){
 async function isFollowing(jobseeker_id, company_id){
     const sql = `SELECT COUNT(*) as is_following FROM "Follow" WHERE jobseeker_id = $1 AND company_id = $2`;
     const binds = [jobseeker_id, company_id];
-    await database.execute(sql, binds);
     result = (await database.execute(sql, binds)).rows;
     return result[0];
 }
