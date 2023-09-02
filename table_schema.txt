@@ -1,119 +1,212 @@
-CREATE TABLE "User" (
-  "user_id" int,
-  "email" varchar(250),
-  "password" varchar(50),
-  "role" varchar(50) NOT NULL,
-  PRIMARY KEY ("user_id")
-);
-CREATE TABLE "Job_Seeker" (
-  "jobseeker_id" serial,
-  "user_id" int NOT NULL,
-  "name" varchar(250),
-  "gender" varchar(50),
-  "profile_pic" varchar(250),
-  "date_of_birth" date,
-  "nationality" varchar(50),
-  "nid" varchar(50),
-  "address" varchar(250),
-  "phone_no" varchar(20),
-  PRIMARY KEY ("jobseeker_id"),
-  CONSTRAINT "FK_Job_Seeker.user_id"
-    FOREIGN KEY ("user_id")
-      REFERENCES "User"("user_id") ON DELETE CASCADE
-);
-CREATE TABLE "Company" (
-  "company_id" serial,
-  "user_id" int NOT NULL,
-  "address" varchar(250),
-  "phone_no" varchar(20),
-  "website_address" varchar(250),
-  "company_logo" varchar(250),
-  "trade_license" varchar(250),
-  "description" varchar(500),
-  "company_name" varchar(250),
-  PRIMARY KEY ("company_id"),
-  CONSTRAINT "FK_Company.user_id"
-    FOREIGN KEY ("user_id")
-      REFERENCES "User"("user_id") ON DELETE CASCADE
-);
-CREATE TABLE "Education" (
-  "degree_id" SERIAL,
-  "jobseeker_id" int NOT NULL,
-  "degree" varchar(250),
-  "subject" varchar(250),
-  "institution" varchar(250),
-  "result" varchar(250),
-  "start_date" date,
-  "end_date" date,
-  PRIMARY KEY ("degree_id"),
-  CONSTRAINT "FK_Education.jobseeker_id"
-    FOREIGN KEY ("jobseeker_id")
-      REFERENCES "Job_Seeker"("jobseeker_id") ON DELETE CASCADE
-);
+CREATE TABLE public."User"
+(
+    user_id serial,
+    email character varying(500) COLLATE pg_catalog."default",
+    password character varying(500) COLLATE pg_catalog."default",
+    role character varying(500) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT "User_pkey" PRIMARY KEY (user_id)
+)
 
-CREATE TABLE "Projects" (
-  "project_id" SERIAL,
-  "jobseeker_id" int NOT NULL,
-  "title" varchar(250),
-  "description" varchar(500),
-  "project_link" varchar(250),
-  "technologies" varchar(500),
-  "start_date" date,
-	"end_date" date,
-  PRIMARY KEY ("project_id"),
-  CONSTRAINT "FK_Projects.jobseeker_id"
-    FOREIGN KEY ("jobseeker_id")
-      REFERENCES "Job_Seeker"("jobseeker_id") ON DELETE CASCADE
-);
+CREATE TABLE public."Job_Seeker"
+(
+    jobseeker_id integer NOT NULL,
+    name character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    gender character varying(1000) COLLATE pg_catalog."default",
+    profile_pic character varying(1000) COLLATE pg_catalog."default",
+    date_of_birth date,
+    nationality character varying(1000) COLLATE pg_catalog."default",
+    nid character varying(1000) COLLATE pg_catalog."default",
+    address character varying(1000) COLLATE pg_catalog."default",
+    phone_no character varying(1000) COLLATE pg_catalog."default",
+    github_link character varying(1000) COLLATE pg_catalog."default",
+    about character varying(1200) COLLATE pg_catalog."default",
+    linkedin_link character varying(1000) COLLATE pg_catalog."default",
+    CONSTRAINT "Job_Seeker_pkey" PRIMARY KEY (jobseeker_id),
+    CONSTRAINT "FK_Job_Seeker.jobseeker_id" FOREIGN KEY (jobseeker_id)
+        REFERENCES public."User" (user_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+        NOT VALID
+)
 
-CREATE TABLE "Skills" (
-  "skill_id" SERIAL,
-  "jobseeker_id" int NOT NULL,
-  "skill_name" varchar(150),
-  "expertise_level" varchar(50),
-  PRIMARY KEY ("skill_id"),
-  CONSTRAINT "FK_Skills.jobseeker_id"
-    FOREIGN KEY ("jobseeker_id")
-      REFERENCES "Job_Seeker"("jobseeker_id") ON DELETE CASCADE
-);
+CREATE TABLE public."Company"
+(
+    company_id integer NOT NULL,
+    address character varying(1000) COLLATE pg_catalog."default",
+    phone_no character varying(1000) COLLATE pg_catalog."default",
+    website_address character varying(1000) COLLATE pg_catalog."default",
+    company_logo character varying(1000) COLLATE pg_catalog."default",
+    trade_license character varying(1000) COLLATE pg_catalog."default",
+    about character varying(1000) COLLATE pg_catalog."default",
+    company_name character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT "Company_pkey" PRIMARY KEY (company_id),
+    CONSTRAINT "FK_Company.company_id" FOREIGN KEY (company_id)
+        REFERENCES public."User" (user_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
 
-CREATE TABLE "Achievements" (
-  "achievement_id" SERIAL,
-  "jobseeker_id" int NOT NULL,
-  "achievement_name" varchar(250),
-  "achievement_date" date,
-  "position" varchar(250),
-  "organized_by" varchar(250),
-  PRIMARY KEY ("achievement_id"),
-  CONSTRAINT "FK_Jobseeker_Achievements.jobseeker_id"
-    FOREIGN KEY ("jobseeker_id")
-      REFERENCES "Job_Seeker"("jobseeker_id") ON DELETE CASCADE
-);
+CREATE TABLE public."Follow"
+(
+    jobseeker_id integer NOT NULL,
+    company_id integer NOT NULL,
+    CONSTRAINT "Follow.primary_key" PRIMARY KEY (jobseeker_id, company_id),
+    CONSTRAINT "Follow.company_id_FK" FOREIGN KEY (company_id)
+        REFERENCES public."Company" (company_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE,
+    CONSTRAINT "Follow.jobseeker_id_FK" FOREIGN KEY (jobseeker_id)
+        REFERENCES public."Job_Seeker" (jobseeker_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
 
-CREATE TABLE "Publications" (
-  "publication_id" SERIAL,
-  "jobseeker_id" int NOT NULL,
-  "title" varchar(250),
-  "authors" varchar(500),
-  "journal" varchar(500),
-  "pdf_link" varchar(500),
-  "publication_date" date,
-  PRIMARY KEY ("publication_id"),
-  CONSTRAINT "FK_Jobseeker_Publications.jobseeker_id"
-    FOREIGN KEY ("jobseeker_id")
-      REFERENCES "Job_Seeker"("jobseeker_id") ON DELETE CASCADE
-);
+CREATE TABLE public."Achievements"
+(
+    achievement_id serial,
+    jobseeker_id integer NOT NULL,
+    achievement_name character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    achievement_date date,
+    "position" character varying(1000) COLLATE pg_catalog."default",
+    organized_by character varying(1000) COLLATE pg_catalog."default",
+    CONSTRAINT "Achievements_pkey" PRIMARY KEY (achievement_id),
+    CONSTRAINT "FK_Jobseeker_Achievements.jobseeker_id" FOREIGN KEY (jobseeker_id)
+        REFERENCES public."Job_Seeker" (jobseeker_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
 
-CREATE TABLE "Work_Experience" (
-  "exp_id" SERIAL,
-  "jobseeker_id" int NOT NULL,
-  "organization" varchar(250),
-  "designation" varchar(250),
-  "employment_type" varchar(250),
-  "start_date" date,
-  "end_date" date,
-  PRIMARY KEY ("exp_id"),
-  CONSTRAINT "FK_Work_Experience.jobseeker_id"
-    FOREIGN KEY ("jobseeker_id")
-      REFERENCES "Job_Seeker"("jobseeker_id") ON DELETE CASCADE
-);
+CREATE TABLE public."Education"
+(
+    degree_id serial,
+    jobseeker_id integer NOT NULL,
+    degree character varying(1000) COLLATE pg_catalog."default",
+    subject character varying(1000) COLLATE pg_catalog."default",
+    institution character varying(1000) COLLATE pg_catalog."default",
+    result character varying(1000) COLLATE pg_catalog."default",
+    start_date date,
+    end_date date,
+    CONSTRAINT "Education_pkey" PRIMARY KEY (degree_id),
+    CONSTRAINT "FK_Education.jobseeker_id" FOREIGN KEY (jobseeker_id)
+        REFERENCES public."Job_Seeker" (jobseeker_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+
+CREATE TABLE public."Projects"
+(
+    project_id serial,
+    jobseeker_id integer NOT NULL,
+    title character varying(1000) COLLATE pg_catalog."default",
+    description character varying(1000) COLLATE pg_catalog."default",
+    project_link character varying(1000) COLLATE pg_catalog."default",
+    technologies character varying(1000) COLLATE pg_catalog."default",
+    start_date date,
+    end_date date,
+    CONSTRAINT "Projects_pkey" PRIMARY KEY (project_id),
+    CONSTRAINT "FK_Projects.jobseeker_id" FOREIGN KEY (jobseeker_id)
+        REFERENCES public."Job_Seeker" (jobseeker_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+
+CREATE TABLE public."Publications"
+(
+    publication_id serial,
+    jobseeker_id integer NOT NULL,
+    title character varying(1000) COLLATE pg_catalog."default",
+    authors character varying(1000) COLLATE pg_catalog."default",
+    journal character varying(1000) COLLATE pg_catalog."default",
+    pdf_link character varying(1000) COLLATE pg_catalog."default",
+    publication_date date,
+    CONSTRAINT "Publications_pkey" PRIMARY KEY (publication_id),
+    CONSTRAINT "FK_Jobseeker_Publications.jobseeker_id" FOREIGN KEY (jobseeker_id)
+        REFERENCES public."Job_Seeker" (jobseeker_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+
+CREATE TABLE public."Skills"
+(
+    skill_id serial,
+    jobseeker_id integer NOT NULL,
+    skill_name character varying(1000) COLLATE pg_catalog."default",
+    expertise_level character varying(1000) COLLATE pg_catalog."default",
+    CONSTRAINT "Skills_pkey" PRIMARY KEY (skill_id),
+    CONSTRAINT "FK_Skills.jobseeker_id" FOREIGN KEY (jobseeker_id)
+        REFERENCES public."Job_Seeker" (jobseeker_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+
+CREATE TABLE public."Work_Experience"
+(
+    exp_id serial,
+    jobseeker_id integer NOT NULL,
+    organization character varying(1000) COLLATE pg_catalog."default",
+    designation character varying(1000) COLLATE pg_catalog."default",
+    employment_type character varying(1000) COLLATE pg_catalog."default",
+    start_date date,
+    end_date date,
+    CONSTRAINT "Work_Experience_pkey" PRIMARY KEY (exp_id),
+    CONSTRAINT "FK_Work_Experience.jobseeker_id" FOREIGN KEY (jobseeker_id)
+        REFERENCES public."Job_Seeker" (jobseeker_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+
+CREATE TABLE public."Review"
+(
+    review_id serial,
+    company_id integer,
+    jobseeker_id integer,
+    comment character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    "time" timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    stars integer NOT NULL,
+    CONSTRAINT "Review.PK" PRIMARY KEY (review_id),
+    CONSTRAINT "FK_Company.company_id" FOREIGN KEY (company_id)
+        REFERENCES public."Company" (company_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE,
+    CONSTRAINT "FK_Jobseeker.jobseeker_id" FOREIGN KEY (jobseeker_id)
+        REFERENCES public."Job_Seeker" (jobseeker_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+        NOT VALID
+)
+
+CREATE TABLE public."JobPost"
+(
+    jobpost_id serial,
+    company_id integer,
+    title character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    description character varying(1000) COLLATE pg_catalog."default",
+    requirements character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    employment_type character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    salary integer NOT NULL,
+    vacancy integer,
+    deadline date NOT NULL,
+    posted_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    keywords character varying(1024) COLLATE pg_catalog."default",
+    CONSTRAINT "Jobpost.primary_key" PRIMARY KEY (jobpost_id),
+    CONSTRAINT "JobPost.company_id_FK" FOREIGN KEY (company_id)
+        REFERENCES public."Company" (company_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+
+CREATE TABLE public."Job_Shortlist"
+(
+    jobpost_id integer NOT NULL,
+    jobseeker_id integer NOT NULL,
+    CONSTRAINT "Job_Shortlist.primary_key" PRIMARY KEY (jobpost_id, jobseeker_id),
+    CONSTRAINT "Job_Shortlist.jobpost_id_FK" FOREIGN KEY (jobpost_id)
+        REFERENCES public."JobPost" (jobpost_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE,
+    CONSTRAINT "Job_Shortlist.jobseeker_id_FK" FOREIGN KEY (jobseeker_id)
+        REFERENCES public."Job_Seeker" (jobseeker_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
