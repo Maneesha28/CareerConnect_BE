@@ -1,14 +1,14 @@
 const Database = require('../database');
 const database = new Database();
 
-async function insertJobpost(company_id, title, description, requirements, employment_type, salary, vacancy, deadline){
-    const sql = `INSERT INTO "JobPost" (company_id, title, description, requirements, employment_type, salary, vacancy, deadline)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`;
-    const binds = [company_id, title, description, requirements, employment_type, salary, vacancy, deadline];
+async function insertJobpost(company_id, title, description, requirements, employment_type, salary, vacancy, deadline, keywords){
+    const sql = `INSERT INTO "JobPost" (company_id, title, description, requirements, employment_type, salary, vacancy, deadline, keywords)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`;
+    const binds = [company_id, title, description, requirements, employment_type, salary, vacancy, deadline, keywords];
     await database.execute(sql, binds);
 }
 
-async function editJobpost(title, description, requirements, employment_type, salary, vacancy, deadline, jobpost_id){
+async function editJobpost(title, description, requirements, employment_type, salary, vacancy, deadline, keywords, jobpost_id){
     const sql = `UPDATE "JobPost"
                 SET title = $1,
                     description = $2,
@@ -16,9 +16,10 @@ async function editJobpost(title, description, requirements, employment_type, sa
                     employment_type = $4, 
                     salary = $5, 
                     vacancy = $6, 
-                    deadline = $7
-                WHERE jobpost_id = $8`
-    const binds = [title, description, requirements, employment_type, salary, vacancy, deadline, jobpost_id];
+                    deadline = $7,
+                    keywords = $8
+                WHERE jobpost_id = $9`
+    const binds = [title, description, requirements, employment_type, salary, vacancy, deadline, keywords, jobpost_id];
     await database.execute(sql, binds);
 }
 
@@ -102,11 +103,11 @@ async function getSearchedJobposts(keyword, jobseeker_id){
                 (
                     address ~* $1
                     OR company_name ~* $1
-                    OR "Company".about ~* $1
+                    OR about ~* $1
                     OR title ~* $1
-                    OR "JobPost".description ~* $1
+                    OR description ~* $1
                     OR requirements ~* $1
-                    OR employment_type ~* $1
+                    OR keywords ~* $1
                 )`;
     const binds = [keyword, jobseeker_id];
     result = (await database.execute(sql, binds)).rows;
@@ -125,7 +126,7 @@ async function getJobpost(jobpost_id, jobseeker_id){
                 LEFT JOIN "Job_Shortlist"
                 ON "JobPost".jobpost_id = "Job_Shortlist".jobpost_id
                     AND "Job_Shortlist".jobseeker_id = $2
-                WHERE jobpost_id = $1`;
+                WHERE "JobPost".jobpost_id = $1`;
     const binds = [jobpost_id, jobseeker_id];
     result = (await database.execute(sql, binds)).rows;
     return result[0];

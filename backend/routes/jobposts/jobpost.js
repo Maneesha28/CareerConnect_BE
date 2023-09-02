@@ -25,16 +25,15 @@ router.get('/is_shortlisted/:jobpost_id', verifyJobseeker, async (req, res) => {
     res.send(result);
 });
 
-
 router.post('', verifyCompany, async (req, res) => {
     await DB_Jobpost.insertJobpost(req.user.company_id, req.body.title, req.body.description, req.body.requirements, 
-        req.body.employment_type, req.body.salary, req.body.vacancy, req.body.deadline);   
+        req.body.employment_type, req.body.salary, req.body.vacancy, req.body.deadline, req.body.keywords);   
     res.send({"status" : "Jobpost added"});
 });
 
 router.put('/:jobpost_id', verifyJobpostAccess, async (req, res) => {
     await DB_Jobpost.editJobpost(req.body.title, req.body.description, req.body.requirements, 
-        req.body.employment_type, req.body.salary, req.body.vacancy, req.body.deadline, req.params.jobpost_id);
+        req.body.employment_type, req.body.salary, req.body.vacancy, req.body.deadline, req.body.keywords, req.params.jobpost_id);
     res.send({"status" : "Jobpost edited"});
 });
 
