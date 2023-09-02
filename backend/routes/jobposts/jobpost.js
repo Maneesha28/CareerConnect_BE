@@ -44,12 +44,12 @@ router.delete('/:jobpost_id', verifyJobpostAccess, async (req, res) => {
 });
 
 router.get('/all/:company_id', verify, async (req, res) => {
-    result = await DB_Jobpost.getJobposts(req.params.company_id);
+    result = await DB_Jobpost.getJobposts(req.params.company_id, req.user.user_id);
     res.send(result);
 });
 
 router.get('/archived/:company_id', verify, async (req, res) => {
-    result = await DB_Jobpost.getArchivedJobposts(req.params.company_id);
+    result = await DB_Jobpost.getArchivedJobposts(req.params.company_id, req.user.user_id);
     res.send(result);
 });
 
@@ -59,12 +59,12 @@ router.get('/followed', verifyJobseeker, async (req, res) => {
 });
 
 router.get('/searched', verifyJobseeker, async (req, res) => {
-    result = await DB_Jobpost.getSearchedJobposts(req.query.keyword);
+    result = await DB_Jobpost.getSearchedJobposts(req.query.keyword, req.user.jobseeker_id);
     res.send(result);
 });
 
 router.get('/:jobpost_id', verify, async (req, res) => {
-    result = await DB_Jobpost.getJobpost(req.params.jobpost_id);
+    result = await DB_Jobpost.getJobpost(req.params.jobpost_id, req.user.user_id);
     res.send(result);
 });
 

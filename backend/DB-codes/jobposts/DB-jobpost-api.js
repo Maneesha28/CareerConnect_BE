@@ -28,36 +28,47 @@ async function deleteJobpost(jobpost_id){
     await database.execute(sql, binds);
 }
 
-async function getJobposts(company_id){
-    const sql = `SELECT "JobPost".*, "Company".*, "User".email 
+async function getJobposts(company_id, jobseeker_id){
+    const sql = `SELECT 
+                    "JobPost".*, "Company".*, "User".email,
+                    CASE WHEN "Job_Shortlist".jobseeker_id IS NOT NULL THEN true ELSE false END AS is_shortlisted
                 FROM "JobPost"
                 INNER JOIN "Company"
                 ON "JobPost".company_id = "Company".company_id 
                 INNER JOIN "User"
                 ON "User".user_id = "Company".company_id 
+                LEFT JOIN "Job_Shortlist"
+                ON "JobPost".jobpost_id = "Job_Shortlist".jobpost_id
+                    AND "Job_Shortlist".jobseeker_id = $2
                 WHERE "Company".company_id = $1 and deadline >= CURRENT_DATE`;
-    const binds = [company_id];
-    await database.execute(sql, binds);
+    const binds = [company_id, jobseeker_id];
     result = (await database.execute(sql, binds)).rows;
     return result;
 }
 
-async function getArchivedJobposts(company_id){
-    const sql = `SELECT "JobPost".*, "Company".*, "User".email 
+async function getArchivedJobposts(company_id, jobseeker_id){
+    const sql = `SELECT 
+                    "JobPost".*, "Company".*, "User".email,
+                    CASE WHEN "Job_Shortlist".jobseeker_id IS NOT NULL THEN true ELSE false END AS is_shortlisted
                 FROM "JobPost"
                 INNER JOIN "Company"
                 ON "JobPost".company_id = "Company".company_id 
                 INNER JOIN "User"
                 ON "User".user_id = "Company".company_id 
-                WHERE "Company".company_id = $1 and deadline < CURRENT_DATE`;
-    const binds = [company_id];
-    await database.execute(sql, binds);
+                LEFT JOIN "Job_Shortlist"
+                ON "JobPost".jobpost_id = "Job_Shortlist".jobpost_id
+                    AND "Job_Shortlist".jobseeker_id = $2
+                WHERE "Company".company_id = $1 and deadline <
+                 CURRENT_DATE`;
+    const binds = [company_id, jobseeker_id];
     result = (await database.execute(sql, binds)).rows;
     return result;
 }
 
 async function getFollowedJobposts(jobseeker_id){
-    const sql = `SELECT "JobPost".*, "Company".*, "User".email 
+    const sql = `SELECT 
+                    "JobPost".*, "Company".*, "User".email, 
+                    CASE WHEN "Job_Shortlist".jobseeker_id IS NOT NULL THEN true ELSE false END AS is_shortlisted
                 FROM "JobPost"
                 INNER JOIN "Company"
                 ON "JobPost".company_id = "Company".company_id 
@@ -65,21 +76,28 @@ async function getFollowedJobposts(jobseeker_id){
                 ON "User".user_id = "Company".company_id
                 INNER JOIN "Follow"
                 on "Follow".company_id = "Company".company_id 
+                LEFT JOIN "Job_Shortlist"
+                ON "JobPost".jobpost_id = "Job_Shortlist".jobpost_id
+                    AND "Job_Shortlist".jobseeker_id = $1
                 WHERE "Follow".jobseeker_id = $1
                 AND deadline >= CURRENT_DATE`;
     const binds = [jobseeker_id];
-    await database.execute(sql, binds);
     result = (await database.execute(sql, binds)).rows;
     return result;
 }
 
-async function getSearchedJobposts(keyword){
-    const sql = `SELECT "JobPost".*, "Company".*, "User".email 
+async function getSearchedJobposts(keyword, jobseeker_id){
+    const sql = `SELECT 
+                    "JobPost".*, "Company".*, "User".email, 
+                    CASE WHEN "Job_Shortlist".jobseeker_id IS NOT NULL THEN true ELSE false END AS is_shortlisted
                 FROM "JobPost"
                 INNER JOIN "Company"
                 ON "JobPost".company_id = "Company".company_id 
                 INNER JOIN "User"
                 ON "User".user_id = "Company".company_id 
+                LEFT JOIN "Job_Shortlist"
+                ON "JobPost".jobpost_id = "Job_Shortlist".jobpost_id
+                    AND "Job_Shortlist".jobseeker_id = $2
                 WHERE deadline >= CURRENT_DATE AND
                 (
                     address ~* $1
@@ -90,21 +108,25 @@ async function getSearchedJobposts(keyword){
                     OR requirements ~* $1
                     OR employment_type ~* $1
                 )`;
-    const binds = [keyword];
-    await database.execute(sql, binds);
+    const binds = [keyword, jobseeker_id];
     result = (await database.execute(sql, binds)).rows;
     return result;
 }
 
-async function getJobpost(jobpost_id){
-    const sql = `SELECT "JobPost".*, "Company".*, "User".email 
+async function getJobpost(jobpost_id, jobseeker_id){
+    const sql = `SELECT 
+                    "JobPost".*, "Company".*, "User".email, 
+                    CASE WHEN "Job_Shortlist".jobseeker_id IS NOT NULL THEN true ELSE false END AS is_shortlisted
                 FROM "JobPost"
                 INNER JOIN "Company"
                 ON "JobPost".company_id = "Company".company_id 
                 INNER JOIN "User"
                 ON "User".user_id = "Company".company_id 
+                LEFT JOIN "Job_Shortlist"
+                ON "JobPost".jobpost_id = "Job_Shortlist".jobpost_id
+                    AND "Job_Shortlist".jobseeker_id = $2
                 WHERE jobpost_id = $1`;
-    const binds = [jobpost_id];
+    const binds = [jobpost_id, jobseeker_id];
     result = (await database.execute(sql, binds)).rows;
     return result[0];
 }
@@ -123,7 +145,7 @@ async function deleteShortlistedJob(jobseeker_id, jobpost_id){
 }
 
 async function getShorlistedJobs(jobseeker_id){
-    const sql = `SELECT "JobPost".*, "Company".*, "User".email 
+    const sql = `SELECT "JobPost".*, "Company".*, "User".email,
                 FROM "JobPost"
                 INNER JOIN "Company"
                 ON "JobPost".company_id = "Company".company_id 
@@ -133,7 +155,6 @@ async function getShorlistedJobs(jobseeker_id){
                 on "JobPost".jobpost_id = "Job_Shortlist".jobpost_id 
                 WHERE "Job_Shortlist".jobseeker_id = $1`;
     const binds = [jobseeker_id];
-    await database.execute(sql, binds);
     result = (await database.execute(sql, binds)).rows;
     return result;
 }
@@ -141,7 +162,6 @@ async function getShorlistedJobs(jobseeker_id){
 async function isShortlisted(jobseeker_id, jobpost_id){
     const sql = `SELECT COUNT(*) as is_shortlisted FROM "Job_Shortlist" WHERE jobseeker_id = $1 AND jobpost_id = $2`;
     const binds = [jobseeker_id, jobpost_id];
-    await database.execute(sql, binds);
     result = (await database.execute(sql, binds)).rows;
     return result[0];
 }

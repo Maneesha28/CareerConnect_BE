@@ -34,10 +34,16 @@ async function getCompany(company_id){
     return result[0];
 }
 
-async function getCompanies(){
-    const sql = `SELECT * FROM "Company"`;
-    console.log('here');
-    const result = (await database.execute(sql)).rows;
+async function getCompanies(jobseeker_id){
+    const sql = `SELECT 
+                    "Company".*,
+                    CASE WHEN "Follow".jobseeker_id IS NOT NULL THEN true ELSE false END AS is_following
+                FROM "Company"
+                LEFT JOIN "Follow"
+                ON "Follow".company_id = "Company".company_id
+                AND "Follow".jobseeker_id = $1`;
+    const binds = [jobseeker_id];
+    const result = (await database.execute(sql, binds)).rows;
     return result;
 }
 
@@ -45,5 +51,5 @@ module.exports = {
     insertCompany,
     editCompany,
     getCompany,
-    getCompanies,
+    getCompanies
 }

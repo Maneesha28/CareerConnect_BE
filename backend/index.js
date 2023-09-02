@@ -22,7 +22,6 @@ app.use(express.json());
 //import routes
 //USER
 const authRoute = require('./routes/users/auth');
-const userRoute = require('./routes/users/user')
 const companyRoute = require('./routes/users/company');
 const jobseekerRoute = require('./routes/users/jobseeker');
 const projectRoute = require('./routes/users/project');
@@ -44,7 +43,6 @@ const reviewRoute = require('./routes/reviews/review');
 //route middleware
 //USER
 app.use('/api/auth', authRoute);    // everything in authroute will have this prefix
-app.use('/api/user', userRoute);
 app.use('/api/company', companyRoute);
 app.use('/api/jobseeker', jobseekerRoute);
 app.use('/api/project', projectRoute);
