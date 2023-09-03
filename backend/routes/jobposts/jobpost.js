@@ -57,6 +57,11 @@ router.get('/followed', verifyJobseeker, async (req, res) => {
     res.send(result);
 });
 
+router.get('/applied', verifyJobseeker, async (req, res) => {
+    result = await DB_Jobpost.getAppliedJobposts(req.user.jobseeker_id);
+    res.send(result);
+});
+
 router.get('/searched', verifyJobseeker, async (req, res) => {
     result = await DB_Jobpost.getSearchedJobposts(req.query.keyword, req.user.jobseeker_id);
     res.send(result);
@@ -66,7 +71,6 @@ router.get('/:jobpost_id', verify, async (req, res) => {
     result = await DB_Jobpost.getJobpost(req.params.jobpost_id, req.user.user_id);
     res.send(result);
 });
-
 
 
 module.exports = router;

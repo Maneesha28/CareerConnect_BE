@@ -87,6 +87,26 @@ async function getFollowedJobposts(jobseeker_id){
     return result;
 }
 
+async function getAppliedJobposts(jobseeker_id){
+    const sql = `SELECT 
+                    "JobPost".*, "Company".*, "User".email, 
+                    CASE WHEN "Job_Shortlist".jobseeker_id IS NOT NULL THEN true ELSE false END AS is_shortlisted
+                FROM "JobPost"
+                INNER JOIN "Company"
+                ON "JobPost".company_id = "Company".company_id 
+                INNER JOIN "User"
+                ON "User".user_id = "Company".company_id
+                INNER JOIN "Application"
+                on "Application".jobpost_id = "JobPost".jobpost_id 
+                LEFT JOIN "Job_Shortlist"
+                ON "JobPost".jobpost_id = "Job_Shortlist".jobpost_id
+                    AND "Job_Shortlist".jobseeker_id = $1
+                WHERE "Application".jobseeker_id = $1`;
+    const binds = [jobseeker_id];
+    result = (await database.execute(sql, binds)).rows;
+    return result;
+}
+
 async function getSearchedJobposts(keyword, jobseeker_id){
     const sql = `SELECT 
                     "JobPost".*, "Company".*, "User".email, 
@@ -174,6 +194,7 @@ module.exports = {
     getJobposts,
     getArchivedJobposts,
     getFollowedJobposts,
+    getAppliedJobposts,
     getSearchedJobposts,
     getJobpost,
     insertShorlistedJob,

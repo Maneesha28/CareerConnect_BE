@@ -37,6 +37,9 @@ const followRoute = require('./routes/follows/follow');
 //JOBPOST
 const jobpostRoute = require('./routes/jobposts/jobpost');
 
+//APPLICATION
+const applicationRoute = require('./routes/applications/application');
+
 //REVIEW
 const reviewRoute = require('./routes/reviews/review');
 
@@ -57,6 +60,9 @@ app.use('/api/follow', followRoute);
 
 //JOBPOST
 app.use('/api/jobpost', jobpostRoute);
+
+//APPLICATION
+app.use('/api/application', applicationRoute);
 
 //REVIEW
 app.use('/api/review', reviewRoute);
