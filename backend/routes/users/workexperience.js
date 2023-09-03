@@ -6,8 +6,13 @@ const { verify } = require('../../middlewares/user-verification');
 
 router.post('', verifyJobseeker, async (req, res) => {
     await DB_workexperience.insertWork_Experience(req.user.jobseeker_id, req.body.organization, req.body.designation, req.body.employment_type, 
-        req.body.start_date, req.body.end_date);   
+        req.body.start_date, req.body.end_date, req.body.is_public);   
     res.send({"status" : "Work Experience added"});
+});
+
+router.get('/filtered/:jobseeker_id', verify, async (req, res) => {
+    result = await DB_workexperience.getFilteredWork_Experiences(req.params.jobseeker_id);
+    res.send(result);
 });
 
 router.put('/:exp_id', verifyWorkExperienceAccess, async (req, res) => {

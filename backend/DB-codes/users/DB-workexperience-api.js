@@ -1,10 +1,10 @@
 const Database = require('../database');
 const database = new Database();
 
-async function insertWork_Experience(jobseeker_id, organization, designation, employment_type, start_date, end_date){
-    const sql = `INSERT INTO "Work_Experience" (jobseeker_id, organization, designation, employment_type, start_date, end_date)
-                VALUES ($1, $2, $3 , $4, $5, $6)`;
-    const binds = [jobseeker_id, organization, designation, employment_type, start_date, end_date];
+async function insertWork_Experience(jobseeker_id, organization, designation, employment_type, start_date, end_date, is_public){
+    const sql = `INSERT INTO "Work_Experience" (jobseeker_id, organization, designation, employment_type, start_date, end_date, is_public)
+                VALUES ($1, $2, $3 , $4, $5, $6, $7)`;
+    const binds = [jobseeker_id, organization, designation, employment_type, start_date, end_date, is_public];
     await database.execute(sql, binds);
 }
 
@@ -42,10 +42,18 @@ async function getWork_Experience(exp_id){
     return result[0];
 }
 
+async function getFilteredWork_Experiences(jobseeker_id){
+    const sql = `SELECT * FROM "Work_Experience" WHERE jobseeker_id = $1 AND is_public`;
+    const binds = [jobseeker_id];
+    result = (await database.execute(sql, binds)).rows;
+    return result;
+}
+
 module.exports = {
     insertWork_Experience,
     editWork_Experience,
     deleteWork_Experience,
     getWork_Experience,
-    getWork_Experiences
+    getWork_Experiences,
+    getFilteredWork_Experiences
 }
