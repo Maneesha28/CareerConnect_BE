@@ -13,6 +13,7 @@ router.put('', verifyJobseeker, async (req, res) => {
 
 router.get('/:jobseeker_id', verify, async (req, res) => {
     result = await DB_jobseeker.getJobseeker(req.params.jobseeker_id);
+    if(result === undefined) res.send({"status" : "not a jobseeker"});
     res.send(result)
 });
 

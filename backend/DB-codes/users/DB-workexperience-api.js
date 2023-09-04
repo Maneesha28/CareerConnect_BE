@@ -27,7 +27,7 @@ async function deleteWork_Experience(exp_id){
 }
 
 async function getWork_Experiences(jobseeker_id){
-    const sql = `SELECT * FROM "Work_Experience" WHERE jobseeker_id = $1`;
+    const sql = `SELECT * FROM "Work_Experience" WHERE jobseeker_id = $1 ORDER BY exp_id`;
     const binds = [jobseeker_id];
     result = (await database.execute(sql, binds)).rows;
     return result;

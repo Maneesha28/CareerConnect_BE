@@ -17,6 +17,7 @@ router.get('/all',verify,async (req, res) => {
 
 router.get('/:company_id', verify, async (req, res) => {
     result = await DB_company.getCompany(req.params.company_id);
+    if(result === undefined) res.send({"status" : "not a company"});
     res.send(result)
 });
 

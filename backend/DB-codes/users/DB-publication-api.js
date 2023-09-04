@@ -27,7 +27,7 @@ async function deletePublication(publication_id){
 }
 
 async function getPublications(jobseeker_id){
-    const sql = `SELECT * FROM "Publications" WHERE jobseeker_id = $1`;
+    const sql = `SELECT * FROM "Publications" WHERE jobseeker_id = $1 ORDER BY publication_id`;
     const binds = [jobseeker_id];
     result = (await database.execute(sql, binds)).rows;
     return result;

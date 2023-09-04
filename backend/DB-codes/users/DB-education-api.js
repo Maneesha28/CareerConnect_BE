@@ -28,7 +28,7 @@ async function deleteEducation(degree_id){
 }
 
 async function getEducations(jobseeker_id){
-    const sql = `SELECT * FROM "Education" WHERE jobseeker_id = $1`;
+    const sql = `SELECT * FROM "Education" WHERE jobseeker_id = $1 ORDER BY degree_id`;
     const binds = [jobseeker_id];
     result = (await database.execute(sql, binds)).rows;
     return result;

@@ -52,6 +52,11 @@ router.get('/archived/:company_id', verify, async (req, res) => {
     res.send(result);
 });
 
+router.get('/recent', verifyJobseeker, async (req, res) => {
+    result = await DB_Jobpost.getRecentJobPosts(req.user.jobseeker_id);
+    res.send(result);
+});
+
 router.get('/followed', verifyJobseeker, async (req, res) => {
     result = await DB_Jobpost.getFollowedJobposts(req.user.jobseeker_id);
     res.send(result);

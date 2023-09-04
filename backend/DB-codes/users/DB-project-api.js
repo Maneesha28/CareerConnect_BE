@@ -28,7 +28,7 @@ async function deleteProject(project_id){
 }
 
 async function getProjects(jobseeker_id){
-    const sql = `SELECT * FROM "Projects" WHERE jobseeker_id = $1`;
+    const sql = `SELECT * FROM "Projects" WHERE jobseeker_id = $1 ORDER BY project_id`;
     const binds = [jobseeker_id];
     result = (await database.execute(sql, binds)).rows;
     return result;

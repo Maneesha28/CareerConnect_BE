@@ -26,8 +26,9 @@ async function deleteReview(review_id){
 
 async function getReviews(company_id){
     const sql = `SELECT "Review".* , "Job_Seeker".name FROM "Review" INNER JOIN "Job_Seeker" 
-    ON "Review".jobseeker_id = "Job_Seeker".jobseeker_id
-    WHERE company_id = $1`;
+                ON "Review".jobseeker_id = "Job_Seeker".jobseeker_id
+                WHERE company_id = $1
+                ORDER BY "time" DESC`;
     const binds = [company_id];
     result = (await database.execute(sql, binds)).rows;
     return result;
