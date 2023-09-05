@@ -43,6 +43,9 @@ const applicationRoute = require('./routes/applications/application');
 //REVIEW
 const reviewRoute = require('./routes/reviews/review');
 
+//NOTIFICATION
+const notificationRoute = require('./routes/notifications/notification');
+
 //route middleware
 //USER
 app.use('/api/auth', authRoute);    // everything in authroute will have this prefix
@@ -67,9 +70,9 @@ app.use('/api/application', applicationRoute);
 //REVIEW
 app.use('/api/review', reviewRoute);
 
-
+//NOTIFICATION
+app.use('/api/notification', notificationRoute);
  
-
 //PORT
 const port = process.env.PORT;
 app.listen(port, async () => {
