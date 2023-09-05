@@ -210,3 +210,175 @@ CREATE TABLE public."Job_Shortlist"
         ON UPDATE NO ACTION
         ON DELETE CASCADE
 )
+
+CREATE TABLE public."Application"
+(
+    jobpost_id integer NOT NULL,
+    jobseeker_id integer NOT NULL,
+    resume character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT "Application.primary_key" PRIMARY KEY (jobpost_id, jobseeker_id),
+    CONSTRAINT "Application.jobpost_id_FK" FOREIGN KEY (jobpost_id)
+        REFERENCES public."JobPost" (jobpost_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE,
+    CONSTRAINT "Application.jobseeker_id_FK" FOREIGN KEY (jobseeker_id)
+        REFERENCES public."Job_Seeker" (jobseeker_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+
+CREATE TABLE public."Notification"
+(
+    notification_id serial,
+    text character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    notification_type character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    related_id integer,
+    posted_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "Notification.primary_key" PRIMARY KEY (notification_id)
+)
+
+CREATE TABLE public."User_Notification"
+(
+    user_id integer NOT NULL,
+    notification_id integer NOT NULL,
+    read character varying(100) COLLATE pg_catalog."default" NOT NULL DEFAULT false,
+    CONSTRAINT "User_Notification.primary_key" PRIMARY KEY (user_id, notification_id),
+    CONSTRAINT "User_Notification.notification_id_FK" FOREIGN KEY (notification_id)
+        REFERENCES public."Notification" (notification_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE,
+    CONSTRAINT "User_Notification.user_id_FK" FOREIGN KEY (user_id)
+        REFERENCES public."User" (user_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+
+-- Create a trigger to delete associated notifications when a follow record is inserted
+CREATE OR REPLACE FUNCTION generate_notification_on_follow()
+RETURNS TRIGGER AS $$
+DECLARE
+    jobseeker_name text;
+	id integer;
+BEGIN
+    SELECT name INTO jobseeker_name FROM "Job_Seeker" WHERE jobseeker_id = NEW.jobseeker_id;
+    
+    INSERT INTO "Notification" (text, notification_type, related_id) VALUES 
+    (CONCAT(jobseeker_name, ' started to follow you.'), 'follow', NEW.jobseeker_id)
+	RETURNING notification_id INTO id;
+	
+	INSERT INTO "User_Notification" (notification_id, user_id) VALUES (id, NEW.company_id);
+	
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER follow_notification_trigger
+AFTER INSERT ON "Follow"
+FOR EACH ROW
+EXECUTE FUNCTION generate_notification_on_follow();
+
+
+-- Create a trigger to delete associated notifications when a follow record is deleted
+CREATE OR REPLACE FUNCTION delete_notification_on_unfollow()
+RETURNS TRIGGER AS $$
+BEGIN
+    DELETE FROM "Notification" WHERE related_id = OLD.jobseeker_id AND notification_type = 'follow';
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create the trigger for the "Follow" table
+CREATE TRIGGER unfollow_notification_trigger
+BEFORE DELETE ON "Follow"
+FOR EACH ROW
+EXECUTE FUNCTION delete_notification_on_unfollow();
+
+
+-- Create a trigger to delete associated notifications when a application record is inserted
+CREATE OR REPLACE FUNCTION generate_notification_on_application()
+RETURNS TRIGGER AS $$
+DECLARE
+    jobseeker_name text;
+	new_company_id integer;
+	new_title text;
+	id integer;
+BEGIN
+    SELECT name INTO jobseeker_name 
+	FROM "Job_Seeker" 
+	WHERE jobseeker_id = NEW.jobseeker_id;
+	
+    SELECT "Company".company_id, title INTO new_company_id, new_title 
+	FROM "Company" 
+	INNER JOIN "JobPost"
+	ON "JobPost".company_id = "Company".company_id
+	WHERE "JobPost".jobpost_id = NEW.jobpost_id;
+	
+    INSERT INTO "Notification" (text, notification_type, related_id) VALUES 
+    (CONCAT(jobseeker_name, CONCAT('has applied to your post: ', new_title)), 'application', NEW.jobpost_id)
+	RETURNING notification_id INTO id;
+	
+	INSERT INTO "User_Notification" (notification_id, user_id) VALUES (id, new_company_id);
+	
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER application_notification_trigger
+AFTER INSERT ON "Application"
+FOR EACH ROW
+EXECUTE FUNCTION generate_notification_on_application();
+
+
+-- Create a trigger to delete associated notifications when a jobpost record is inserted/updated
+CREATE OR REPLACE FUNCTION generate_notification_on_jobpost()
+RETURNS TRIGGER AS $$
+DECLARE
+    new_company_name text;
+	id integer;
+	notified_jobseeker_id integer;
+BEGIN
+    SELECT company_name INTO new_company_name
+	FROM "Company" 
+	WHERE company_id = NEW.company_id;
+	IF OLD IS NULL THEN
+        INSERT INTO "Notification" (text, notification_type, related_id) VALUES 
+		(CONCAT(new_company_name, CONCAT(' has posted a new post: ', NEW.title)), 'jobpost', NEW.jobpost_id)
+		RETURNING notification_id INTO id;
+	ELSE
+		INSERT INTO "Notification" (text, notification_type, related_id) VALUES 
+		(CONCAT(new_company_name, CONCAT(' has updated a post: ', NEW.title)), 'jobpost', NEW.jobpost_id)
+		RETURNING notification_id INTO id;
+    END IF;
+    
+	FOR notified_jobseeker_id IN (SELECT DISTINCT jobseeker_id
+								  FROM "Follow" 
+								  INNER JOIN "JobPost" 
+								  ON "JobPost".company_id = "Follow".company_id) LOOP  
+		RAISE NOTICE 'The value of my_variable is:';
+		INSERT INTO "User_Notification"(notification_id, user_id) VALUES(id, notified_jobseeker_id);
+	END LOOP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER jobpost_notification_trigger
+AFTER INSERT OR UPDATE ON "JobPost"
+FOR EACH ROW
+EXECUTE FUNCTION generate_notification_on_jobpost();
+
+
+-- Create a trigger to delete associated notifications when a follow jobpost is deleted
+CREATE OR REPLACE FUNCTION delete_notification_on_jobpost()
+RETURNS TRIGGER AS $$
+BEGIN
+    DELETE FROM "Notification" WHERE related_id = OLD.jobpost_id AND notification_type = 'jobpost';
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create the trigger for the "JobPost" table
+CREATE TRIGGER jobpost_delete_notification_trigger
+BEFORE DELETE ON "JobPost"
+FOR EACH ROW
+EXECUTE FUNCTION delete_notification_on_jobpost();
+
