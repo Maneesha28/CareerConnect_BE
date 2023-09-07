@@ -18,4 +18,9 @@ router.get('/count', verify ,async (req,res)=>{
     res.send(result);
 });
 
+router.put('/mark_read', verify ,async (req,res)=>{
+    await DB_notification.markRead(req.user.user_id);
+    res.send({"status" : "Marked as read"});
+});
+
 module.exports = router;
