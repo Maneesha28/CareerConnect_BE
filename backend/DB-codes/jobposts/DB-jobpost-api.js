@@ -190,7 +190,7 @@ async function deleteShortlistedJob(jobseeker_id, jobpost_id){
 }
 
 async function getShorlistedJobs(jobseeker_id){
-    const sql = `SELECT "JobPost".*, "Company".*, "User".email,
+    const sql = `SELECT "JobPost".*, "Company".*, "User".email
                 FROM "JobPost"
                 INNER JOIN "Company"
                 ON "JobPost".company_id = "Company".company_id 
