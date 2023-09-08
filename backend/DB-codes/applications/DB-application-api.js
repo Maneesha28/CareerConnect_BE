@@ -19,6 +19,15 @@ async function getApplications(jobpost_id){
     return result;
 }
 
+async function getApplicationsCount(jobpost_id) {
+    const sql = `SELECT COUNT("Application".jobpost_id) AS application_count
+                FROM "Application"
+                WHERE "Application".jobpost_id = $1`;
+    const binds = [jobpost_id];
+    result = (await database.execute(sql, binds)).rows;
+    return result[0];
+}
+
 async function isApplied(jobseeker_id, jobpost_id){
     const sql = `SELECT COUNT(*) as is_applied FROM "Application" WHERE jobseeker_id = $1 AND jobpost_id = $2`;
     const binds = [jobseeker_id, jobpost_id];
@@ -29,5 +38,6 @@ async function isApplied(jobseeker_id, jobpost_id){
 module.exports = {
     insertApplication,
     getApplications,
+    getApplicationsCount,
     isApplied
 }
