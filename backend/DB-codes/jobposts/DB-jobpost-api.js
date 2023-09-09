@@ -212,6 +212,12 @@ async function isShortlisted(jobseeker_id, jobpost_id){
     return result[0];
 }
 
+async function getCompanyID(jobpost_id){
+    const sql = `SELECT company_id FROM "JobPost" WHERE jobpost_id = $1`;
+    const binds = [jobpost_id];
+    result = (await database.execute(sql, binds)).rows;
+    return result[0];
+}
 module.exports = {
     insertJobpost,
     editJobpost,
@@ -226,5 +232,6 @@ module.exports = {
     insertShorlistedJob,
     deleteShortlistedJob,
     getShorlistedJobs,
-    isShortlisted
+    isShortlisted,
+    getCompanyID
 }

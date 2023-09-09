@@ -77,5 +77,9 @@ router.get('/:jobpost_id', verify, async (req, res) => {
     res.send(result);
 });
 
+router.get('/company/:jobpost_id', verify, async (req, res) => {
+    result = await DB_Jobpost.getCompanyID(req.params.jobpost_id);
+    res.send(result);
+});
 
 module.exports = router;
