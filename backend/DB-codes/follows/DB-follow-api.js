@@ -32,10 +32,14 @@ async function getFollowerCount(company_id){
 }
 
 async function getFollowings(jobseeker_id){
-    const sql = `SELECT * 
+    const sql = `SELECT "Company".*, COALESCE(ROUND(AVG(stars)),0) as avg_stars
                 FROM "Company" INNER JOIN "Follow" 
                 ON "Company".company_id = "Follow".company_id 
-                WHERE "Follow".jobseeker_id = $1`;
+                LEFT JOIN "Review"
+                ON "Review".company_id = "Company".company_id
+                WHERE "Follow".jobseeker_id = $1
+                GROUP BY  "Company".company_id, "Follow".jobseeker_id
+                ORDER BY avg_stars DESC`;
     const binds = [jobseeker_id];
     await database.execute(sql, binds);
     result = (await database.execute(sql, binds)).rows;
