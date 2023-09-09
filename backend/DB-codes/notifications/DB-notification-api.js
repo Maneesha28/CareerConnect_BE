@@ -47,8 +47,6 @@ async function getUnreadNotificationsCount(user_id){
     return result[0];
 }
 
-
-
 module.exports = {
     getAllNotifications,
     getUnreadNotifications,

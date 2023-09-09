@@ -9,6 +9,11 @@ router.post('', verifyJobseeker, async (req, res) => {
     res.send({"status" : "Application added"});
 });
 
+router.get('/suggested/:jobpost_id', verifyJobpostAccess, async (req, res) => {
+    result = await DB_Application.getSuggestedApplications(req.params.jobpost_id);
+    res.send(result);
+});
+
 router.get('/:jobpost_id', verifyJobpostAccess, async (req, res) => {
     result = await DB_Application.getApplications(req.params.jobpost_id);
     res.send(result);
