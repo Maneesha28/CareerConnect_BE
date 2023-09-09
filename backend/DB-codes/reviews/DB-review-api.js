@@ -35,7 +35,7 @@ async function getReviews(company_id){
 }
 
 async function getAvgStars(company_id){
-    const sql = `SELECT ROUND(AVG(stars)) as avg_stars FROM "Review" WHERE company_id = $1`;
+    const sql = `SELECT COALESCE(ROUND(AVG(stars)),0) as avg_stars FROM "Review" WHERE company_id = $1`;
     const binds = [company_id];
     result = (await database.execute(sql, binds)).rows;
     return result[0];
