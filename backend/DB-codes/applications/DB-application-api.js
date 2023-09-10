@@ -20,11 +20,16 @@ async function getApplications(jobpost_id){
 }
 
 async function getSuggestedApplications(jobpost_id){
-    const sql = `WITH JobPostSkills AS (
+    let sql = `SELECT keywords FROM "JobPost" where jobpost_id = $1`;
+    let binds = [jobpost_id];
+    result = (await database.execute(sql, binds)).rows;
+    keywords = result[0].keywords;
+
+    sql = `WITH JobPostSkills AS (
                     SELECT
                         ap.jobpost_id,
                         ap.jobseeker_id,
-                        SUM(CASE WHEN sk.skill_name ~* js.keywords THEN 1 ELSE 0 END) AS skill_score
+                        SUM(CASE WHEN sk.skill_name ~* $2 THEN 1 ELSE 0 END) AS skill_score
                     FROM
                         "Application" ap
                     INNER JOIN
@@ -38,7 +43,7 @@ async function getSuggestedApplications(jobpost_id){
                     SELECT
                         ap.jobpost_id,
                         ap.jobseeker_id,
-                        SUM(CASE WHEN ac.achievement_name ~* js.keywords THEN 1 ELSE 0 END) AS achievement_score
+                        SUM(CASE WHEN ac.achievement_name ~* $2 THEN 1 ELSE 0 END) AS achievement_score
                     FROM
                         "Application" ap
                     INNER JOIN
@@ -52,7 +57,7 @@ async function getSuggestedApplications(jobpost_id){
                     SELECT
                         ap.jobpost_id,
                         ap.jobseeker_id,
-                        SUM(CASE WHEN CONCAT(CONCAT(pr.description, ' '),pr.technologies) ~* js.keywords THEN 1 ELSE 0 END) AS project_score
+                        SUM(CASE WHEN CONCAT(CONCAT(pr.description, ' '),pr.technologies) ~* $2 THEN 1 ELSE 0 END) AS project_score
                     FROM
                         "Application" ap
                     INNER JOIN
@@ -77,7 +82,7 @@ async function getSuggestedApplications(jobpost_id){
                     JobPostProjects pscore ON ap.jobpost_id = pscore.jobpost_id AND ap.jobseeker_id = pscore.jobseeker_id
                 WHERE ap.jobpost_id = $1
                 ORDER BY total_score DESC;`;
-    const binds = [jobpost_id];
+    binds = [jobpost_id, keywords];
     result = (await database.execute(sql, binds)).rows;
     return result;
 }
